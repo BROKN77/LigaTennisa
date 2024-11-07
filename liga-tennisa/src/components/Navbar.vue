@@ -5,16 +5,14 @@
       <li><a href="#">Главная</a></li>
       <li><a href="#">Для участников</a></li>
       <li>
-        <a href="#" @click.prevent="openModal('Заявки')"
-          >Для организаторов</a
-        >
+        <a href="#" @click.prevent="openModal('Заявки')">Для организаторов</a>
       </li>
       <li><a href="#">Результаты</a></li>
       <li>
         <a href="#" @click.prevent="openModal('Контакты')">Контакты</a>
       </li>
       <li>
-        <a href="#" @click.prevent="openModal('Регистрация')">Регистрация</a>
+        <a href="#" @click.prevent="openModal('Регистрация')">Логин</a>
       </li>
     </ul>
   </nav>
@@ -52,9 +50,6 @@ export default {
   gap: 2rem;
 }
 
-.nav-links li {
-  //text-transform: uppercase;
-}
 
 .nav-links a {
   color: #fff;

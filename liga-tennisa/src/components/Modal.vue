@@ -7,17 +7,37 @@
         <form @submit.prevent="registerUser" class="registration-form">
           <div class="form-group">
             <label for="username">Имя пользователя: </label>
-            <input type="text" id="username" v-model="username" required class="form-input" />
+            <input
+              type="text"
+              id="username"
+              v-model="username"
+              required
+              class="form-input"
+            />
           </div>
           <div class="form-group">
             <label for="email">Email: </label>
-            <input type="email" id="email" v-model="email" required class="form-input" />
+            <input
+              type="email"
+              id="email"
+              v-model="email"
+              required
+              class="form-input"
+            />
           </div>
           <div class="form-group">
             <label for="password">Пароль: </label>
-            <input type="password" id="password" v-model="password" required class="form-input" />
+            <input
+              type="password"
+              id="password"
+              v-model="password"
+              required
+              class="form-input"
+            />
           </div>
-          <button type="submit" class="submit-button">Зарегистрироваться</button>
+          <button type="submit" class="submit-button">
+            Зарегистрироваться
+          </button>
         </form>
       </div>
       <p v-else>Тут будет(-ут) {{ title.toLowerCase() }}.</p>
@@ -26,6 +46,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'MainModal',
   props: {
@@ -43,29 +65,34 @@ export default {
       username: '',
       email: '',
       password: '',
-    };
+    }
   },
   methods: {
     closeModal() {
-      this.$emit('close-modal');
-      this.resetForm();
+      this.$emit('close-modal')
+      this.resetForm()
     },
     resetForm() {
-      this.username = '';
-      this.email = '';
-      this.password = '';
+      this.username = ''
+      this.email = ''
+      this.password = ''
     },
-    registerUser() {
-      // Здесь можно добавить логику для отправки данных на сервер
-      console.log('Регистрация пользователя:', {
-        username: this.username,
-        email: this.email,
-        password: this.password,
-      });
-      this.closeModal(); // Закрываем модальное окно после регистрации
+    async registerUser() {
+      try {
+           const response = await axios.post('http://localhost:3008/register', {
+             username: this.username,
+             email: this.email,
+             password: this.password,
+           });
+           alert(response.data.message);
+         } catch (error) {
+           console.error(error);
+           alert('Ошибка при регистрации');
+         }
+      this.closeModal() // Закрываем модальное окно после регистрации
     },
   },
-};
+}
 </script>
 
 <style>
@@ -119,7 +146,6 @@ export default {
 .registration-form {
   display: flex;
   flex-direction: column;
-
 }
 
 .form-group {
