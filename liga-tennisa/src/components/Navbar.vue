@@ -13,6 +13,9 @@
       <li>
         <a href="#" @click.prevent="openModal('Контакты')">Контакты</a>
       </li>
+      <li>
+        <a href="#" @click.prevent="openModal('Регистрация')">Регистрация</a>
+      </li>
     </ul>
   </nav>
 </template>
@@ -35,6 +38,7 @@ export default {
   align-items: center;
   background-color: #246d20;
   padding: 1rem 2rem;
+  margin: 0;
 }
 
 .logo {
@@ -45,11 +49,11 @@ export default {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .nav-links li {
-  text-transform: uppercase;
+  //text-transform: uppercase;
 }
 
 .nav-links a {
