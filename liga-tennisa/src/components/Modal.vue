@@ -2,25 +2,45 @@
   <div class="modal" v-if="visible">
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
-      <h2 class="modal-title">{{ title }}</h2>
-      <div v-if="title === 'Регистрация'">
+      <h2 class="modal-title">{{ isRegistering ? 'Регистрация' : 'Вход' }}</h2> <!-- Заголовок меняется в зависимости от формы -->
+      <div v-if="!isRegistering"> <!-- Форма входа -->
+        <form @submit.prevent="loginUser" class="login-form">
+          <div class="form-group">
+            <label for="loginEmail">Email: </label><br>
+            <input type="email" id="loginEmail" v-model="loginEmail" required class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Пароль: </label><br>
+            <input type="password" id="loginPassword" v-model="loginPassword" required class="form-input" />
+          </div>
+          <button type="submit" class="submit-button">Войти</button>
+        </form>
+        <div class="register-prompt">
+          <p>Нет аккаунта?</p>
+          <button @click="switchToRegister" class="register-button">Регистрация</button>
+        </div>
+      </div>
+      <div v-else> <!-- Форма регистрации -->
         <form @submit.prevent="registerUser" class="registration-form">
           <div class="form-group">
-            <label for="username">Имя пользователя: </label>
+            <label for="username">Имя пользователя: </label><br>
             <input type="text" id="username" v-model="username" required class="form-input" />
           </div>
           <div class="form-group">
-            <label for="email">Email: </label>
+            <label for="email">Email: </label><br>
             <input type="email" id="email" v-model="email" required class="form-input" />
           </div>
           <div class="form-group">
-            <label for="password">Пароль: </label>
+            <label for="password">Пароль: </label><br>
             <input type="password" id="password" v-model="password" required class="form-input" />
           </div>
           <button type="submit" class="submit-button">Зарегистрироваться</button>
         </form>
+        <div class="login-prompt">
+          <p>Уже есть аккаунт?</p>
+          <button @click="switchToLogin" class="login-button">Вход</button>
+        </div>
       </div>
-      <p v-else>Тут будет(-ут) {{ title.toLowerCase() }}.</p>
     </div>
   </div>
 </template>
@@ -40,9 +60,12 @@ export default {
   },
   data() {
     return {
+      isRegistering: false, // По умолчанию показываем форму входа
       username: '',
       email: '',
       password: '',
+      loginEmail: '',
+      loginPassword: '',
     };
   },
   methods: {
@@ -54,15 +77,29 @@ export default {
       this.username = '';
       this.email = '';
       this.password = '';
+      this.loginEmail = '';
+      this.loginPassword = '';
     },
     registerUser() {
-      // Здесь можно добавить логику для отправки данных на сервер
       console.log('Регистрация пользователя:', {
         username: this.username,
         email: this.email,
         password: this.password,
       });
       this.closeModal(); // Закрываем модальное окно после регистрации
+    },
+    loginUser() {
+      console.log('Вход пользователя:', {
+        email: this.loginEmail,
+        password: this.loginPassword,
+      });
+      this.closeModal(); // Закрываем модальное окно после входа
+    },
+    switchToLogin() {
+      this.isRegistering = false; // Переключаемся на форму входа
+    },
+    switchToRegister() {
+      this.isRegistering = true; // Переключаемся на форму регистрации
     },
   },
 };
@@ -77,7 +114,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-
   opacity: 0;
   animation: ani 2.5s forwards;
 }
@@ -89,7 +125,6 @@ export default {
     opacity: 1;
   }
 }
-
 .modal-content {
   background-color: #fff;
   margin: 15% auto;
@@ -101,41 +136,39 @@ export default {
 .modal-title {
   text-align: center; /* Центрирование заголовка */
 }
-
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
-
 .close:hover,
 .close:focus {
   color: black;
   text-decoration: none;
   cursor: pointer;
 }
-
-.registration-form {
+.registration-form,
+.login-form {
   display: flex;
   flex-direction: column;
-
 }
-
 .form-group {
   margin-bottom: 15px;
+  text-align: center;
 }
+
 
 .form-input {
-  padding: 10px;
+  padding: 13px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
+  width: 250px;
+  margin-top: 7px;
 }
-
 .form-input:focus {
   border-color: #007bff; /* Цвет рамки при фокусе */
 }
-
 .submit-button {
   padding: 10px;
   background-color: #007bff; /* Цвет кнопки */
@@ -144,8 +177,25 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
-
 .submit-button:hover {
   background-color: #0056b3; /* Цвет кнопки при наведении */
+}
+.login-prompt,
+.register-prompt {
+  text-align: center; /* Центрирование текста и кнопки */
+  margin-top: 15px; /* Отступ сверху */
+}
+.login-button,
+.register-button {
+  padding: 5px; /* Отступы для кнопок */
+  background-color: #28a745; /* Цвет кнопки */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.login-button:hover,
+.register-button:hover {
+  background-color: #218838; /* Цвет кнопки при наведении */
 }
 </style>

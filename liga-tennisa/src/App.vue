@@ -6,7 +6,10 @@
       :title="modalTitle"
       @close-modal="hideModal"
     />
-    <EventCalendar @open-modal="showModal" />
+    <div class="main-content">
+      <EventCalendar @open-modal="showModal" />
+      <News />
+    </div>
   </div>
 </template>
 
@@ -14,6 +17,7 @@
 import Navbar from './components/Navbar.vue';
 import Modal from './components/Modal.vue';
 import EventCalendar from './components/EventCalendar.vue';
+import News from './components/News.vue';
 
 export default {
   name: 'App',
@@ -21,6 +25,7 @@ export default {
     Navbar,
     Modal,
     EventCalendar,
+    News,
   },
   data() {
     return {
@@ -54,6 +59,9 @@ body, html{
   margin: 0;
   opacity: 0;
   animation: ani 1.5s forwards;
+}
+.main-content {
+  display: flex; /* Устанавливаем флекс-контейнер для размещения календаря и новостей рядом */
 }
 @keyframes ani {
   0% {

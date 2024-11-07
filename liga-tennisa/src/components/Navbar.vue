@@ -14,7 +14,7 @@
         <a href="#" @click.prevent="openModal('Контакты')">Контакты</a>
       </li>
       <li>
-        <a href="#" @click.prevent="openModal('Регистрация')">Регистрация</a>
+        <a href="#" @click.prevent="openModal('Вход')">Вход</a>
       </li>
     </ul>
   </nav>
