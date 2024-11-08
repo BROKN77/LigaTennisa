@@ -20,16 +20,16 @@ export default {
   components: {
     VueCal,
   },
-  data()  {
-    return{
+  data() {
+    return {
       events: [
-      {
+        {
           start: new Date(2024, 10, 8, 10, 0), // October 1, 2023, 10:00 AM
-          end: new Date(2024, 10, 8, 12, 0),   // October 1, 2023, 12:00 PM
+          end: new Date(2024, 10, 8, 12, 0), // October 1, 2023, 12:00 PM
           title: 'Событие',
           color: '#FF5733', // Custom color for this event
         },
-      ]
+      ],
     }
   },
   methods: {
@@ -45,7 +45,7 @@ export default {
   width: 700px;
   height: 700px;
   font-size: 12px;
-  margin-left:3%;
-  margin-top:5%;
+  margin-left: 3%;
+  margin-top: 5%;
 }
 </style>

@@ -2,53 +2,94 @@
   <div class="modal" v-if="visible">
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
-      <h2 class="modal-title">{{ isRegistering ? 'Регистрация' : 'Вход' }}</h2> <!-- Заголовок меняется в зависимости от формы -->
-      <div v-if="!isRegistering"> <!-- Форма входа -->
-        <form @submit.prevent="loginUser" class="login-form">
-          <div class="form-group">
-            <label for="loginEmail">Email: </label><br>
-            <input type="email" id="loginEmail" v-model="loginEmail" required class="form-input" />
+      <div v-if="title==='Вход'">
+        <h2 class="modal-title">{{ isRegistering ? 'Регистрация':'Вход' }}</h2>
+        <!-- Заголовок меняется в зависимости от формы -->
+        <div v-if="!isRegistering">
+          <!-- Форма входа -->
+          <form @submit.prevent="loginUser" class="login-form">
+            <div class="form-group">
+              <label for="loginEmail">Email: </label><br />
+              <input
+                type="email"
+                id="loginEmail"
+                v-model="loginEmail"
+                required
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Пароль: </label><br />
+              <input
+                type="password"
+                id="loginPassword"
+                v-model="loginPassword"
+                required
+                class="form-input"
+              />
+            </div>
+            <button type="submit" class="submit-button">Войти</button>
+          </form>
+          <div class="register-prompt">
+            <p>Нет аккаунта?</p>
+            <button @click="switchToRegister" class="register-button">
+              Регистрация
+            </button>
           </div>
-          <div class="form-group">
-            <label for="loginPassword">Пароль: </label><br>
-            <input type="password" id="loginPassword" v-model="loginPassword" required class="form-input" />
+        </div>
+        <div v-if="isRegistering">
+          <!-- Форма регистрации -->
+          <form @submit.prevent="registerUser" class="registration-form">
+            <div class="form-group">
+              <label for="username">Имя пользователя: </label><br />
+              <input
+                type="text"
+                id="username"
+                v-model="username"
+                required
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="email">Email: </label><br />
+              <input
+                type="email"
+                id="email"
+                v-model="email"
+                required
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Пароль: </label><br />
+              <input
+                type="password"
+                id="password"
+                v-model="password"
+                required
+                class="form-input"
+              />
+            </div>
+            <button type="submit" class="submit-button">
+              Зарегистрироваться
+            </button>
+          </form>
+          <div class="login-prompt">
+            <p>Уже есть аккаунт?</p>
+            <button @click="switchToLogin" class="login-button">Вход</button>
           </div>
-          <button type="submit" class="submit-button">Войти</button>
-        </form>
-        <div class="register-prompt">
-          <p>Нет аккаунта?</p>
-          <button @click="switchToRegister" class="register-button">Регистрация</button>
         </div>
       </div>
-      <div v-else> <!-- Форма регистрации -->
-        <form @submit.prevent="registerUser" class="registration-form">
-          <div class="form-group">
-            <label for="username">Имя пользователя: </label><br>
-            <input type="text" id="username" v-model="username" required class="form-input" />
-          </div>
-          <div class="form-group">
-            <label for="email">Email: </label><br>
-            <input type="email" id="email" v-model="email" required class="form-input" />
-          </div>
-          <div class="form-group">
-            <label for="password">Пароль: </label><br>
-            <input type="password" id="password" v-model="password" required class="form-input" />
-          </div>
-          <button type="submit" class="submit-button">
-            Зарегистрироваться
-          </button>
-        </form>
-        <div class="login-prompt">
-          <p>Уже есть аккаунт?</p>
-          <button @click="switchToLogin" class="login-button">Вход</button>
-        </div>
+      <div v-else-if="title==='Заявки'">
+        <h2 class="modal-title">{{ title }}</h2>
       </div>
     </div>
+    
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'MainModal',
@@ -70,7 +111,7 @@ export default {
       password: '',
       loginEmail: '',
       loginPassword: '',
-    };
+    }
   },
   methods: {
     closeModal() {
@@ -78,38 +119,38 @@ export default {
       this.resetForm()
     },
     resetForm() {
-      this.username = '';
-      this.email = '';
-      this.password = '';
-      this.loginEmail = '';
-      this.loginPassword = '';
+      this.username = ''
+      this.email = ''
+      this.password = ''
+      this.loginEmail = ''
+      this.loginPassword = ''
     },
     async registerUser() {
       try {
-           const response = await axios.post('http://localhost:3008/register', {
-             username: this.username,
-             email: this.email,
-             password: this.password,
-           });
-           alert(response.data.message);
-         } catch (error) {
-           console.error(error);
-           alert('Ошибка при регистрации');
-         }
-      this.closeModal(); // Закрываем модальное окно после регистрации
+        const response = await axios.post('http://localhost:3008/register', {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        })
+        alert(response.data.message)
+      } catch (error) {
+        console.error(error)
+        alert('Ошибка при регистрации')
+      }
+      this.closeModal() // Закрываем модальное окно после регистрации
     },
     loginUser() {
       console.log('Вход пользователя:', {
         email: this.loginEmail,
         password: this.loginPassword,
-      });
-      this.closeModal(); // Закрываем модальное окно после входа
+      })
+      this.closeModal() // Закрываем модальное окно после входа
     },
     switchToLogin() {
-      this.isRegistering = false; // Переключаемся на форму входа
+      this.isRegistering = false // Переключаемся на форму входа
     },
     switchToRegister() {
-      this.isRegistering = true; // Переключаемся на форму регистрации
+      this.isRegistering = true // Переключаемся на форму регистрации
     },
   },
 }
@@ -167,7 +208,6 @@ export default {
   margin-bottom: 15px;
   text-align: center;
 }
-
 
 .form-input {
   padding: 13px;

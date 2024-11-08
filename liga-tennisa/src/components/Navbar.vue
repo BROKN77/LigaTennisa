@@ -50,7 +50,6 @@ export default {
   gap: 2rem;
 }
 
-
 .nav-links a {
   color: #fff;
   text-decoration: none;

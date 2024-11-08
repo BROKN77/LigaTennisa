@@ -2,7 +2,10 @@
   <div class="news-carousel">
     <h2>Новости</h2>
     <div class="carousel">
-         <div class="carousel-content" :style="{ transform: 'translateX(-' + currentIndex + ' * 100%)' }">
+      <div
+        class="carousel-content"
+        :style="{ transform: 'translateX(-' + currentIndex + ' * 100%)' }"
+      >
         <div v-for="(newsItem, index) in news" :key="index" class="news-item">
           <h3>{{ newsItem.title }}</h3>
           <p>{{ newsItem.description }}</p>
@@ -11,11 +14,12 @@
     </div>
     <div class="navigation">
       <button @click="prevNews" :disabled="currentIndex === 0">◀</button>
-      <button @click="nextNews" :disabled="currentIndex === news.length - 1">▶</button>
+      <button @click="nextNews" :disabled="currentIndex === news.length - 1">
+        ▶
+      </button>
     </div>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -28,23 +32,23 @@ export default {
         { title: 'Новость 2', description: 'Описание новости 2' },
         { title: 'Новость 3', description: 'Описание новости 3' },
       ],
-    };
+    }
   },
   methods: {
     nextNews() {
       if (this.currentIndex < this.news.length - 1) {
-        this.currentIndex++;
-        console.log('Current Index (Next):', this.currentIndex);
+        this.currentIndex++
+        console.log('Current Index (Next):', this.currentIndex)
       }
     },
     prevNews() {
       if (this.currentIndex > 0) {
-        this.currentIndex--;
-        console.log('Current Index (Prev):', this.currentIndex);
+        this.currentIndex--
+        console.log('Current Index (Prev):', this.currentIndex)
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>
