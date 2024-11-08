@@ -34,7 +34,9 @@
             <label for="password">Пароль: </label><br>
             <input type="password" id="password" v-model="password" required class="form-input" />
           </div>
-          <button type="submit" class="submit-button">Зарегистрироваться</button>
+          <button type="submit" class="submit-button">
+            Зарегистрироваться
+          </button>
         </form>
         <div class="login-prompt">
           <p>Уже есть аккаунт?</p>
@@ -46,6 +48,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'MainModal',
   props: {
@@ -70,8 +74,8 @@ export default {
   },
   methods: {
     closeModal() {
-      this.$emit('close-modal');
-      this.resetForm();
+      this.$emit('close-modal')
+      this.resetForm()
     },
     resetForm() {
       this.username = '';
@@ -80,12 +84,18 @@ export default {
       this.loginEmail = '';
       this.loginPassword = '';
     },
-    registerUser() {
-      console.log('Регистрация пользователя:', {
-        username: this.username,
-        email: this.email,
-        password: this.password,
-      });
+    async registerUser() {
+      try {
+           const response = await axios.post('http://localhost:3008/register', {
+             username: this.username,
+             email: this.email,
+             password: this.password,
+           });
+           alert(response.data.message);
+         } catch (error) {
+           console.error(error);
+           alert('Ошибка при регистрации');
+         }
       this.closeModal(); // Закрываем модальное окно после регистрации
     },
     loginUser() {
@@ -102,7 +112,7 @@ export default {
       this.isRegistering = true; // Переключаемся на форму регистрации
     },
   },
-};
+}
 </script>
 
 <style>

@@ -31,22 +31,23 @@ export default {
     return {
       isModalVisible: false,
       modalTitle: '',
-    };
+    }
   },
   methods: {
     showModal(section) {
-      this.modalTitle = section;
-      this.isModalVisible = true;
+      this.modalTitle = section
+      this.isModalVisible = true
     },
     hideModal() {
-      this.isModalVisible = false;
+      this.isModalVisible = false
     },
   },
-};
+}
 </script>
 
 <style>
-body, html{
+body,
+html {
   margin: 0;
   background-color: #f0f0f0;
 }
