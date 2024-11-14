@@ -11,7 +11,10 @@
       <li>
         <a href="#" @click.prevent="openModal('Контакты')">Контакты</a>
       </li>
-      <li>
+      <li v-if="isLoggedIn">
+        <a href="#" @click.prevent="openModal('Профиль')">Профиль</a>
+      </li>
+      <li v-else>
         <a href="#" @click.prevent="openModal('Вход')">Вход</a>
       </li>
     </ul>
@@ -21,6 +24,12 @@
 <script>
 export default {
   name: 'MainNavbar',
+  props: {
+    isLoggedIn: {
+      type: Boolean,
+      default: false,
+    },
+  },
   methods: {
     openModal(section) {
       this.$emit('open-modal', section)

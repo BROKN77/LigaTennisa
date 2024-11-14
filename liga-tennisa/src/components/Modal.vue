@@ -2,8 +2,10 @@
   <div class="modal" v-if="visible">
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
-      <div v-if="title==='Вход'">
-        <h2 class="modal-title">{{ isRegistering ? 'Регистрация':'Вход' }}</h2>
+      <div v-if="title === 'Вход'">
+        <h2 class="modal-title">
+          {{ isRegistering ? 'Регистрация' : 'Вход' }}
+        </h2>
         <!-- Заголовок меняется в зависимости от формы -->
         <div v-if="!isRegistering">
           <!-- Форма входа -->
@@ -80,11 +82,41 @@
           </div>
         </div>
       </div>
-      <div v-else-if="title==='Заявки'">
+      <div v-else-if="title === 'Заявки'">
         <h2 class="modal-title">{{ title }}</h2>
       </div>
+      <div v-else-if="title === 'Профиль'">
+        <h2 class="modal-title">{{ 'Ваш ' + title.toLowerCase() }}</h2>
+        <div class="profile">
+          <div
+            class="image-holder"
+            @mouseenter="hover = true"
+            @mouseleave="hover = false"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              ref="fileInput"
+              @change="uploadImage"
+              style="display: none"
+            />
+            <img
+              v-if="imageUrlProfile"
+              :src="imageUrlProfile"
+              alt="Profile Picture"
+              class="profile-picture"
+              @click = "triggerFileInput"
+            />
+            <div v-else class="empty-circle" @click="triggerFileInput">
+              <span v-if="hover" class="add-sign">+</span>
+            </div>
+          </div>
+          <h3 class="username">{{ usernameProfile }}</h3>
+          <p class="email">{{ emailProfile }}</p>
+        </div>
+        <button class="logout" @click="logoutUser">Выйти из профиля</button>
+      </div>
     </div>
-    
   </div>
 </template>
 
@@ -105,13 +137,26 @@ export default {
   },
   data() {
     return {
-      isRegistering: false, // По умолчанию показываем форму входа
+      isRegistering: false,
       username: '',
       email: '',
       password: '',
       loginEmail: '',
       loginPassword: '',
+      isLoggedIn: false,
+      imageUrl: '',
+      hover: false,
+      usernameProfile:'',
+      emailProfile:'',
+      imageUrlProfile:'',
     }
+  },
+  mounted() {
+    // Check if token exists in localStorage
+    if (localStorage.getItem('token')) {
+      this.$emit('login-success');
+    }
+    this.fetchUserData()
   },
   methods: {
     closeModal() {
@@ -133,24 +178,115 @@ export default {
           password: this.password,
         })
         alert(response.data.message)
+        this.closeModal() // Close modal after registration
       } catch (error) {
         console.error(error)
         alert('Ошибка при регистрации')
       }
-      this.closeModal() // Закрываем модальное окно после регистрации
     },
-    loginUser() {
-      console.log('Вход пользователя:', {
-        email: this.loginEmail,
-        password: this.loginPassword,
-      })
-      this.closeModal() // Закрываем модальное окно после входа
+
+    async loginUser() {
+      try {
+        const response = await axios.post('http://localhost:3008/login', {
+          email: this.loginEmail,
+          password: this.loginPassword,
+        })
+        alert(response.data.message) // Show success message or token
+        localStorage.setItem('token', response.data.token) // Store token
+        this.isLoggedIn = true // Update login state
+        this.token = localStorage.getItem('token')
+        // Emit an event to notify parent of successful login
+        this.$emit('login-success')
+        // Decrypt the token and get user ID
+
+        this.closeModal(); // Close modal after login
+        location.reload();
+      } catch (error) {
+        console.error(error)
+        alert('Ошибка при входе. Проверьте ваши учетные данные.')
+      }
+    },
+    triggerFileInput() {
+      this.$refs.fileInput.click() // Trigger file input click
+    },
+    async uploadImage(event) {
+      const file = event.target.files[0]
+      const parseJwt = token => {
+        try {
+          return JSON.parse(atob(token.split('.')[1]))
+        } catch (e) {
+          return null
+        }
+      }
+      this.token = localStorage.getItem('token')
+
+      this.userId = parseJwt(this.token)
+      console.log(this.userId.id)
+      if (file) {
+        const formData = new FormData()
+        formData.append('image', file)
+        formData.append('userId', this.userId.id) // Add userId here
+
+        try {
+          const response = await axios.post(
+            `http://localhost:3008/upload-image/${this.userId.id}`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${localStorage.getItem('token')}`, // Include token if necessary
+              },
+            },
+          )
+
+          this.imageUrl = response.data.imageUrl // Adjust this if needed based on your response
+          alert('Image uploaded successfully!')
+        } catch (error) {
+          console.error('Error uploading image:', error)
+          alert('Failed to upload image.')
+        }
+      }
+    },
+    //Load picture to profile
+
+    async fetchUserData() {
+      try {
+        const parseJwt = token => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]))
+          } catch (e) {
+            return null
+          }
+        }
+        this.token = localStorage.getItem('token')
+
+        this.userId = parseJwt(this.token)
+        console.log('User ID:', this.userId.id);
+        const response = await fetch(`http://localhost:3008/api/user/${this.userId.id}`) // Replace '1' with actual user ID
+        if (!response.ok) throw new Error('Network response was not ok')
+        const data = await response.json()
+        this.usernameProfile = data.username
+        this.emailProfile = data.email
+        if(data.image!==null){
+          this.imageUrlProfile = `data.image ? data:image/jpeg;base64,${data.image}`; // Adjust MIME type as needed
+        } else {
+          this.imageUrlProfile = null;
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+      }
     },
     switchToLogin() {
-      this.isRegistering = false // Переключаемся на форму входа
+      this.isRegistering = false // Switch to login form
     },
     switchToRegister() {
-      this.isRegistering = true // Переключаемся на форму регистрации
+      this.isRegistering = true // Switch to registration form
+    },
+    logoutUser() {
+      localStorage.removeItem('token') // Clear token from localStorage
+      this.isLoggedIn = false // Update login state
+      this.imageUrl = ''
+      location.reload()
     },
   },
 }
@@ -247,5 +383,59 @@ export default {
 .login-button:hover,
 .register-button:hover {
   background-color: #218838; /* Цвет кнопки при наведении */
+}
+/* Image holder */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-holder {
+  position: relative;
+  width: 100px; /* Adjust size as needed */
+  height: 100px; /* Adjust size as needed */
+  border-radius: 50%;
+  border: 2px dashed #ccc; /* Style for empty circle */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.empty-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #f0f0f0; /* Background color for empty state */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover; /* Ensures the image covers the circle */
+}
+
+.add-sign {
+  font-size: 24px;
+  color: #aaa; /* Color for the + sign */
+}
+.logout {
+    background-color: #ff0000; /* Red color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 15px 30px; /* Vertical and horizontal padding */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: transform 0.2s ease; /* Smooth transition for size change */
+}
+
+.logout:hover {
+    transform: scale(1.05); /* Slightly increase size on hover */
 }
 </style>
