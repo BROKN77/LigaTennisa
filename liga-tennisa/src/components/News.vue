@@ -1,22 +1,12 @@
 <template>
-  <div class="news-carousel">
-    <h2>Новости</h2>
-    <div class="carousel">
-      <div
-        class="carousel-content"
-        :style="{ transform: 'translateX(-' + currentIndex + ' * 100%)' }"
-      >
-        <div v-for="(newsItem, index) in news" :key="index" class="news-item">
-          <h3>{{ newsItem.title }}</h3>
-          <p>{{ newsItem.description }}</p>
-        </div>
+  <div class="news-container">
+    <h2>Новости тенниса</h2>
+    <div v-for="(article, index) in articles" :key="index" class="news-item">
+      <img :src="article.urlToImage" alt="News Image" class="news-image" v-if="article.urlToImage"/>
+      <div class="news-content">
+        <a :href="article.url" target="_blank" class="news-title">{{ article.title }}</a>
+        <p class="news-description">{{ article.description }}</p>
       </div>
-    </div>
-    <div class="navigation">
-      <button @click="prevNews" :disabled="currentIndex === 0">◀</button>
-      <button @click="nextNews" :disabled="currentIndex === news.length - 1">
-        ▶
-      </button>
     </div>
   </div>
 </template>
@@ -26,85 +16,75 @@ export default {
   name: 'News',
   data() {
     return {
-      currentIndex: 0,
-      news: [
-        { title: 'Новость 1', description: 'Описание новости 1' },
-        { title: 'Новость 2', description: 'Описание новости 2' },
-        { title: 'Новость 3', description: 'Описание новости 3' },
-      ],
-    }
+      articles: [],
+    };
+  },
+  created() {
+    this.fetchNews();
   },
   methods: {
-    nextNews() {
-      if (this.currentIndex < this.news.length - 1) {
-        this.currentIndex++
-        console.log('Current Index (Next):', this.currentIndex)
-      }
-    },
-    prevNews() {
-      if (this.currentIndex > 0) {
-        this.currentIndex--
-        console.log('Current Index (Prev):', this.currentIndex)
+    async fetchNews() {
+      try {
+        const response = await fetch('https://newsapi.org/v2/everything?q=tennis&language=ru&apiKey=122d83bacd74421a88d0b72178d0a0ac');
+        const data = await response.json();
+        this.articles = data.articles;
+      } catch (error) {
+        console.error('Ошибка при загрузке новостей:', error);
       }
     },
   },
-}
+};
 </script>
 
 <style scoped>
-.news-carousel {
-  width: 600px; /* Ширина карусели */
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden; /* Скрываем переполнение */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+.news-container {
+  margin: 20px auto; /* Центрирование контейнера */
+  width: 1200px; /* Ширина контейнера */
+  padding: 20px; /* Внутренние отступы */
+  background-color: #ffffff; /* Фоновый цвет контейнера */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень вокруг контейнера */
+  border-radius: 10px; /* Скругление углов контейнера */
 }
 
-.carousel {
-  overflow: hidden; /* Скрываем переполнение */
-}
-
-.carousel-content {
-  display: flex;
-  transition: transform 0.5s ease; /* Плавный переход */
+.news-container h2 {
+  font-size: 24px;
+  text-align: center; /* Центрирование заголовка */
 }
 
 .news-item {
-  min-width: 100%; /* Каждое новостное сообщение занимает всю ширину */
-  box-sizing: border-box;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #eaeaea;
-}
-
-.news-item h3 {
-  margin: 0;
-}
-
-.news-item p {
-  color: #555;
-}
-
-.navigation {
   display: flex;
-  justify-content: space-between;
+  align-items: flex-start;
+  margin: 15px 0;
   padding: 10px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
+  background-color: #f9f9f9;
 }
 
-button:disabled {
-  background-color: #ccc;
+.news-image {
+  width: 100px; /* Ширина изображения */
+  height: auto; /* Автоматическая высота для сохранения пропорций */
+  margin-right: 15px; /* Отступ между изображением и текстом */
+  border-radius: 5px; /* Скругление углов изображения */
 }
 
-button:hover:not(:disabled) {
-  background-color: #0056b3;
+.news-content {
+  flex-grow: 1; /* Позволяет блоку с текстом занимать оставшееся пространство */
+}
+
+.news-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.news-title:hover {
+  text-decoration: underline;
+}
+
+.news-description {
+  margin-top: 5px;
+  color: #555; /* Цвет текста описания */
 }
 </style>

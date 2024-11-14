@@ -8,8 +8,9 @@
       @login-success="handleLoginSuccess"
     />
     <div class="main-content">
-      <EventCalendar @open-modal="showModal" />
       <News />
+      <EventCalendar @open-modal="showModal" />
+      
     </div>
   </div>
 </template>
@@ -56,6 +57,7 @@ html {
   margin: 0;
   background-color: #f0f0f0;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -66,9 +68,11 @@ html {
   opacity: 0;
   animation: ani 1.5s forwards;
 }
+
 .main-content {
   display: flex; /* Устанавливаем флекс-контейнер для размещения календаря и новостей рядом */
 }
+
 @keyframes ani {
   0% {
     opacity: 0;

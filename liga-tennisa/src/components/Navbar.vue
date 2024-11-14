@@ -43,20 +43,26 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #246d20;
-  padding: 1rem 2rem;
+  background-color: #23831e;
+  padding: 0.75rem ;
   margin: 0;
+  border-bottom-left-radius: 20px; 
+  border-bottom-right-radius: 20px;
 }
 
 .logo {
   font-size: 1.5rem;
   color: #fff;
+  margin-left: 100px;
 }
 
 .nav-links {
   list-style: none;
   display: flex;
   gap: 2rem;
+  font-weight: 700;
+  font-size: 18px;
+  margin-right: 50px;
 }
 
 .nav-links a {
@@ -66,7 +72,7 @@ export default {
 }
 
 .nav-links a:hover {
-  color: #7ee6ee;
+  color: #52d182;
 }
 
 li:not(:last-child) {
