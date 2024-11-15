@@ -48,6 +48,9 @@ export default {
   margin: 0;
   border-bottom-left-radius: 20px; 
   border-bottom-right-radius: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo {

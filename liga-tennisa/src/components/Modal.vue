@@ -82,8 +82,51 @@
           </div>
         </div>
       </div>
-      <div v-else-if="title === 'Заявки'">
-        <h2 class="modal-title">{{ title }}</h2>
+      <div v-else-if="title === 'Заявки'"> 
+          <h2 class="modal-title">Заявка на проведение турнира</h2> 
+          <form @submit.prevent="submitForm">
+              <div class="form-group">
+                  <label for="phone">Номер телефона организатора:</label>
+                  <input type="tel" id="phone" v-model="form.phone" required />
+              </div>
+              
+              <div class="form-group">
+                  <label for="email">Почта:</label>
+                  <input type="email" id="email" v-model="form.email" required />
+              </div>
+              
+              <div class="form-group">
+                  <label for="lastName">Фамилия:</label>
+                  <input type="text" id="lastName" v-model="form.lastName" required />
+              </div>
+              
+              <div class="form-group">
+                  <label for="firstName">Имя:</label>
+                  <input type="text" id="firstName" v-model="form.firstName" required />
+              </div>
+              
+              <div class="form-group">
+                  <label for="middleName">Отчество:</label>
+                  <input type="text" id="middleName" v-model="form.middleName" required />
+              </div>
+
+              <div class="form-group">
+                  <label for="date">Дата проведения:</label>
+                  <input type="date" id="date" v-model="form.date" required />
+              </div>
+
+              <div class="form-group">
+                  <label for="location">Место проведения:</label>
+                  <input type="text" id="location" v-model="form.location" required />
+              </div>
+
+              <div class="form-group">
+                  <label for="tournamentName">Название турнира:</label>
+                  <input type="text" id="tournamentName" v-model="form.tournamentName" required />
+              </div>
+
+              <button type="submit">Отправить заявку</button>
+          </form>
       </div>
       <div v-else-if="title === 'Профиль'">
         <h2 class="modal-title">{{ 'Ваш ' + title.toLowerCase() }}</h2>
@@ -149,6 +192,16 @@ export default {
       usernameProfile:'',
       emailProfile:'',
       imageUrlProfile:'',
+      form: {
+                phone: '',
+                email: '',
+                lastName: '',
+                firstName: '',
+                middleName: '',
+                date: '',
+                location: '',
+                tournamentName: ''
+            }
     }
   },
   mounted() {
@@ -444,4 +497,30 @@ export default {
 .logout:hover {
     transform: scale(1.05); /* Slightly increase size on hover */
 }
+
+.form-group {
+    margin-bottom: 0.5rem; /* Уменьшение отступа между полями */
+}
+label {
+    display: block;
+    margin-bottom: 0.25rem; /* Уменьшение отступа под заголовком */
+}
+input {
+    width: 100%;
+    padding: 0.25rem; /* Уменьшение внутреннего отступа */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    padding: 0.5rem;
+    background-color: #23831e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #1a6414;
+}
+
 </style>
