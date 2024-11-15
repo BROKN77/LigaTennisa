@@ -249,33 +249,39 @@ export default {
     },
     //Load picture to profile
 
-    async fetchUserData() {
-      try {
-        const parseJwt = token => {
-          try {
-            return JSON.parse(atob(token.split('.')[1]))
-          } catch (e) {
-            return null
-          }
-        }
-        this.token = localStorage.getItem('token')
+    async fetchUserData() { 
+  try { 
+    const parseJwt = token => { 
+      try { 
+        return JSON.parse(atob(token.split('.')[1])); 
+      } catch (e) { 
+        return null; 
+      } 
+    }; 
 
-        this.userId = parseJwt(this.token)
-        console.log('User ID:', this.userId.id);
-        const response = await fetch(`http://localhost:3008/api/user/${this.userId.id}`) // Replace '1' with actual user ID
-        if (!response.ok) throw new Error('Network response was not ok')
-        const data = await response.json()
-        this.usernameProfile = data.username
-        this.emailProfile = data.email
-        if(data.image!==null){
-          this.imageUrlProfile = `data.image ? data:image/jpeg;base64,${data.image}`; // Adjust MIME type as needed
-        } else {
-          this.imageUrlProfile = null;
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error)
-      }
-    },
+    this.token = localStorage.getItem('token'); 
+
+    this.userId = parseJwt(this.token); 
+    console.log('User ID:', this.userId.id); 
+
+    const response = await fetch(`http://localhost:3008/api/user/${this.userId.id}`); // Замените '1' на фактический ID пользователя 
+
+    if (!response.ok) throw new Error('Network response was not ok'); 
+
+    const data = await response.json(); 
+
+    this.usernameProfile = data.username; 
+    this.emailProfile = data.email; 
+
+    if (data.image !== null) { 
+      this.imageUrlProfile = data.image ? `data:image/jpeg;base64,${data.image}` : null; // Исправлено
+    } else { 
+      this.imageUrlProfile = null; 
+    } 
+  } catch (error) { 
+    console.error('Error fetching user data:', error); 
+  } 
+},
     switchToLogin() {
       this.isRegistering = false // Switch to login form
     },
