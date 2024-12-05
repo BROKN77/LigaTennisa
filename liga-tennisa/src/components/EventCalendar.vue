@@ -2,77 +2,53 @@
   <div class="event-calendar">
     <h2>Календарь событий</h2>
     <div class="events">
-      <div 
-        class="event-card" 
-        v-for="event in events" 
-        :key="event.id" 
-        @click="openModal(event.title)"
+      <div
+        class="event-card"
+        v-for="event in events"
+        :key="event.id"
+        @click="openModal(event.tournament_name)" 
       >
-        <h3>{{ event.title }}</h3>
-        <p>{{ event.date }}</p>
-        <p>{{ event.description }}</p>
+        <h3>{{ event.tournament_name }}</h3>
+        <p>{{ changeDate(event.date) }} {{ event.time }}</p>
+        <p>Уровень турнира: <b>{{ event.tournament_level }}</b></p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import moment from 'moment';
+
 export default {
   name: 'EventCalendar',
   data() {
     return {
-      events: [
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-        { id: 1, title: 'Событие 1', date: '18 ноября 2024', description: 'Первый отборочный тур' },
-        { id: 2, title: 'Событие 2', date: '20 ноября 2024', description: 'Второй отборочный тур' },
-        { id: 3, title: 'Событие 3', date: '29 ноября 2024', description: 'Чемпионат' },
-      ]
+      events: [],
     };
   },
+  
+  created() {
+    this.fetchEvents(); // Fetch events when the component is created
+  },
   methods: {
-    openModal(title) {
-      this.$emit('open-modal', title);
+    openModal(tournament_name) { // Adjusted parameter name for clarity
+      this.$emit('open-modal', tournament_name);
+    },
+    async fetchEvents() {
+      try {
+        const response = await axios.get('http://localhost:3008/api/events'); // Adjust URL as necessary
+        this.events = response.data; // Assuming your API returns an array of events
+        console.log(response);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    },
+    changeDate(date){
+      return(moment(date).format("DD/MM/YYYY"));
     }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -103,7 +79,9 @@ h2 {
   border-radius: 8px;
   padding: 15px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .event-card:hover {

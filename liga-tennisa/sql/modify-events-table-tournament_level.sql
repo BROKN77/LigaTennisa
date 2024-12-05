@@ -1,0 +1,1 @@
+ALTER TABLE events MODIFY tournament_level varchar(255);

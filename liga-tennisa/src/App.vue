@@ -10,7 +10,6 @@
     <div class="main-content">
       <News />
       <EventCalendar @open-modal="showModal" />
-      
     </div>
   </div>
 </template>

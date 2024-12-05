@@ -11,7 +11,7 @@
           <!-- Форма входа -->
           <form @submit.prevent="loginUser" class="login-form">
             <div class="form-group">
-              <label for="loginEmail">Email: </label><br />
+              <label for="loginEmail">Email: </label>
               <input
                 type="email"
                 id="loginEmail"
@@ -21,7 +21,7 @@
               />
             </div>
             <div class="form-group">
-              <label for="loginPassword">Пароль: </label><br />
+              <label for="loginPassword">Пароль: </label>
               <input
                 type="password"
                 id="loginPassword"
@@ -43,7 +43,7 @@
           <!-- Форма регистрации -->
           <form @submit.prevent="registerUser" class="registration-form">
             <div class="form-group">
-              <label for="username">Имя пользователя: </label><br />
+              <label for="username">Имя пользователя: </label>
               <input
                 type="text"
                 id="username"
@@ -53,7 +53,7 @@
               />
             </div>
             <div class="form-group">
-              <label for="email">Email: </label><br />
+              <label for="email">Email: </label>
               <input
                 type="email"
                 id="email"
@@ -63,7 +63,7 @@
               />
             </div>
             <div class="form-group">
-              <label for="password">Пароль: </label><br />
+              <label for="password">Пароль: </label>
               <input
                 type="password"
                 id="password"
@@ -71,6 +71,20 @@
                 required
                 class="form-input"
               />
+            </div>
+            <div class="form-group">
+              <label for="skillLevel">Уровень навыков: </label>
+              <select
+                id="skillLevel"
+                v-model="skillLevel"
+                required
+                class="form-input"
+              >
+                <option value="">Выберите уровень</option>
+                <option value="Новичок">Новичок</option>
+                <option value="Любитель">Любитель</option>
+                <option value="Профессионал">Профессионал</option>
+              </select>
             </div>
             <button type="submit" class="submit-button">
               Зарегистрироваться
@@ -82,83 +96,126 @@
           </div>
         </div>
       </div>
-      <div v-else-if="title === 'Заявки'"> 
-          <h2 class="modal-title">Заявка на проведение турнира</h2> 
-          <form @submit.prevent="submitForm">
-              <div class="form-group">
-                  <label for="phone">Номер телефона организатора:</label>
-                  <input type="tel" id="phone" v-model="form.phone" required />
-              </div>
-              
-              <div class="form-group">
-                  <label for="email">Почта:</label>
-                  <input type="email" id="email" v-model="form.email" required />
-              </div>
-              
-              <div class="form-group">
-                  <label for="lastName">Фамилия:</label>
-                  <input type="text" id="lastName" v-model="form.lastName" required />
-              </div>
-              
-              <div class="form-group">
-                  <label for="firstName">Имя:</label>
-                  <input type="text" id="firstName" v-model="form.firstName" required />
-              </div>
-              
-              <div class="form-group">
-                  <label for="middleName">Отчество:</label>
-                  <input type="text" id="middleName" v-model="form.middleName" required />
-              </div>
+      <div v-else-if="title === 'Заявки'">
+        <h2 class="modal-title">Заявка на проведение турнира</h2>
+        <form @submit.prevent="submitForm">
+          <div class="form-group">
+            <label for="phone">Номер телефона организатора:</label>
+            <input type="text" id="phone" v-model="form.phone" required />
+          </div>
 
-              <div class="form-group">
-                  <label for="date">Дата проведения:</label>
-                  <input type="date" id="date" v-model="form.date" required />
-              </div>
+          <div class="form-group">
+            <label for="email">Почта:</label>
+            <input type="email" id="email" v-model="form.email" required />
+          </div>
 
-              <div class="form-group">
-                  <label for="location">Место проведения:</label>
-                  <input type="text" id="location" v-model="form.location" required />
-              </div>
+          <div class="form-group">
+            <label for="lastName">Фамилия:</label>
+            <input type="text" id="lastName" v-model="form.lastName" required />
+          </div>
 
-              <div class="form-group">
-                  <label for="tournamentName">Название турнира:</label>
-                  <input type="text" id="tournamentName" v-model="form.tournamentName" required />
-              </div>
+          <div class="form-group">
+            <label for="firstName">Имя:</label>
+            <input
+              type="text"
+              id="firstName"
+              v-model="form.firstName"
+              required
+            />
+          </div>
 
-              <button type="submit">Отправить заявку</button>
-          </form>
+          <div class="form-group">
+            <label for="middleName">Отчество:</label>
+            <input
+              type="text"
+              id="middleName"
+              v-model="form.middleName"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="date">Дата проведения:</label>
+            <input type="date" id="date" v-model="form.date" required />
+          </div>
+
+          <div class="form-group">
+            <label for="time">Время проведения:</label>
+            <input type="time" id="time" v-model="form.time" required />
+          </div>
+
+          <div class="form-group">
+            <label for="location">Место проведения:</label>
+            <input type="text" id="location" v-model="form.location" required />
+          </div>
+
+          <div class="form-group">
+            <label for="tournamentName">Название турнира:</label>
+            <input
+              type="text"
+              id="tournamentName"
+              v-model="form.tournamentName"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="tournamentLevel">Уровень навыков: </label>
+              <select
+                id="tournamentLevel"
+                v-model="form.tournamentLevel"
+                required
+                class="form-input"
+              >
+                <option value="">Выберите уровень</option>
+                <option value="Новичок">Новичок</option>
+                <option value="Любитель">Любитель</option>
+                <option value="Профессионал">Профессионал</option>
+                <option value="Мастер">Мастер</option>
+              </select>
+          </div>
+          <button @click="submitApplication" type="submit">Отправить заявку</button>
+        </form>
       </div>
       <div v-else-if="title === 'Профиль'">
         <h2 class="modal-title">{{ 'Ваш ' + title.toLowerCase() }}</h2>
         <div class="profile">
-          <div
-            class="image-holder"
-            @mouseenter="hover = true"
-            @mouseleave="hover = false"
-          >
-            <input
-              type="file"
-              accept="image/*"
-              ref="fileInput"
-              @change="uploadImage"
-              style="display: none"
-            />
-            <img
-              v-if="imageUrlProfile"
-              :src="imageUrlProfile"
-              alt="Profile Picture"
-              class="profile-picture"
-              @click = "triggerFileInput"
-            />
-            <div v-else class="empty-circle" @click="triggerFileInput">
-              <span v-if="hover" class="add-sign">+</span>
+          <div class="inline-objects">
+            <div
+              class="image-holder"
+              @mouseenter="hover = true"
+              @mouseleave="hover = false"
+            >
+              <input
+                type="file"
+                accept="image/*"
+                ref="fileInput"
+                @change="uploadImage"
+                style="display: none"
+              />
+              <img
+                v-if="imageUrlProfile"
+                :src="imageUrlProfile"
+                alt="Profile Picture"
+                class="profile-picture"
+                @click="triggerFileInput"
+              />
+              <div v-else class="empty-circle" @click="triggerFileInput">
+                <span v-if="hover" class="add-sign">+</span>
+              </div>
+            </div>
+            <div class="block-text">
+            <h3 class="username">Имя: {{ usernameProfile }}</h3>
+            <p class="email">Почта: {{ emailProfile }}</p>
+            <p class="skillLevel">
+              <i>Ваши очки:
+              {{ skillLevelProfile }}</i>
+            </p>
             </div>
           </div>
-          <h3 class="username">{{ usernameProfile }}</h3>
-          <p class="email">{{ emailProfile }}</p>
-        </div>
         <button class="logout" @click="logoutUser">Выйти из профиля</button>
       </div>
+    </div>
+    
     </div>
   </div>
 </template>
@@ -186,30 +243,34 @@ export default {
       password: '',
       loginEmail: '',
       loginPassword: '',
+      skillLevel: '',
       isLoggedIn: false,
       imageUrl: '',
       hover: false,
-      usernameProfile:'',
-      emailProfile:'',
-      imageUrlProfile:'',
+      usernameProfile: '',
+      emailProfile: '',
+      imageUrlProfile: '',
+      skillLevelProfile: '',
       form: {
-                phone: '',
-                email: '',
-                lastName: '',
-                firstName: '',
-                middleName: '',
-                date: '',
-                location: '',
-                tournamentName: ''
-            }
+        phone: '',
+        email: '',
+        lastName: '',
+        firstName: '',
+        middleName: '',
+        date: '',
+        time: '',
+        location: '',
+        tournamentName: '',
+      },
     }
   },
   mounted() {
     // Check if token exists in localStorage
     if (localStorage.getItem('token')) {
-      this.$emit('login-success');
+      this.$emit('login-success')
     }
-    this.fetchUserData()
+    this.fetchUserData();
+    
   },
   methods: {
     closeModal() {
@@ -220,8 +281,20 @@ export default {
       this.username = ''
       this.email = ''
       this.password = ''
+      this.skillLevel = ''
       this.loginEmail = ''
       this.loginPassword = ''
+      this.form = {
+        phone: '',
+        email: '',
+        lastName: '',
+        firstName: '',
+        middleName: '',
+        date: '',
+        time: '',
+        location: '',
+        tournamentName: '',
+      };
     },
     async registerUser() {
       try {
@@ -229,6 +302,7 @@ export default {
           username: this.username,
           email: this.email,
           password: this.password,
+          skillLevel: this.skillLevel,
         })
         alert(response.data.message)
         this.closeModal() // Close modal after registration
@@ -251,9 +325,9 @@ export default {
         // Emit an event to notify parent of successful login
         this.$emit('login-success')
         // Decrypt the token and get user ID
-
-        this.closeModal(); // Close modal after login
-        location.reload();
+        console.log(this.token);
+        this.closeModal() // Close modal after login
+        location.reload()
       } catch (error) {
         console.error(error)
         alert('Ошибка при входе. Проверьте ваши учетные данные.')
@@ -294,6 +368,7 @@ export default {
 
           this.imageUrl = response.data.imageUrl // Adjust this if needed based on your response
           alert('Image uploaded successfully!')
+          location.reload();
         } catch (error) {
           console.error('Error uploading image:', error)
           alert('Failed to upload image.')
@@ -302,39 +377,44 @@ export default {
     },
     //Load picture to profile
 
-    async fetchUserData() { 
-  try { 
-    const parseJwt = token => { 
-      try { 
-        return JSON.parse(atob(token.split('.')[1])); 
-      } catch (e) { 
-        return null; 
-      } 
-    }; 
+    async fetchUserData() {
+      try {
+        const parseJwt = token => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]))
+          } catch (e) {
+            return null
+          }
+        }
 
-    this.token = localStorage.getItem('token'); 
+        this.token = localStorage.getItem('token')
 
-    this.userId = parseJwt(this.token); 
-    console.log('User ID:', this.userId.id); 
+        this.userId = parseJwt(this.token)
+        console.log('User ID:', this.userId.id)
 
-    const response = await fetch(`http://localhost:3008/api/user/${this.userId.id}`); // Замените '1' на фактический ID пользователя 
+        const response = await fetch(
+          `http://localhost:3008/api/user/${this.userId.id}`,
+        ) // Замените '1' на фактический ID пользователя
 
-    if (!response.ok) throw new Error('Network response was not ok'); 
+        if (!response.ok) throw new Error('Network response was not ok')
 
-    const data = await response.json(); 
+        const data = await response.json()
+        console.log(data)
+        this.usernameProfile = data.username
+        this.emailProfile = data.email
+        this.skillLevelProfile = data.skill_level
 
-    this.usernameProfile = data.username; 
-    this.emailProfile = data.email; 
-
-    if (data.image !== null) { 
-      this.imageUrlProfile = data.image ? `data:image/jpeg;base64,${data.image}` : null; // Исправлено
-    } else { 
-      this.imageUrlProfile = null; 
-    } 
-  } catch (error) { 
-    console.error('Error fetching user data:', error); 
-  } 
-},
+        if (data.image !== null) {
+          this.imageUrlProfile = data.image
+            ? `data:image/jpeg;base64,${data.image}`
+            : null // Исправлено
+        } else {
+          this.imageUrlProfile = null
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+      }
+    },
     switchToLogin() {
       this.isRegistering = false // Switch to login form
     },
@@ -347,13 +427,24 @@ export default {
       this.imageUrl = ''
       location.reload()
     },
+    async submitApplication() {
+      try {
+        const response = await axios.post('http://localhost:3008/submit-application', this.form);
+        alert(response.data.message); // Show success message
+        this.resetForm(); // Reset form after submission
+        this.closeModal(); // Close modal after submission
+      } catch (error) {
+        console.error(error);
+        alert('Ошибка при отправке заявки');
+      }
+    },
   },
 }
 </script>
 
 <style>
 .modal {
-  position: fixed;
+  position:fixed;
   z-index: 1000;
   left: 0;
   top: 0;
@@ -362,6 +453,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   animation: ani 2.5s forwards;
+  margin-bottom: 100px;
 }
 @keyframes ani {
   0% {
@@ -373,7 +465,7 @@ export default {
 }
 .modal-content {
   background-color: #fff;
-  margin: 15% auto;
+  margin: 10% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 350px;
@@ -402,6 +494,7 @@ export default {
 .form-group {
   margin-bottom: 15px;
   text-align: center;
+  margin-bottom: 0.5rem;
 }
 
 .form-input {
@@ -449,7 +542,13 @@ export default {
   flex-direction: column;
   align-items: center;
 }
+.inline-objects{
+  display: inline-flex;
+  padding-bottom: 5%;
+}
+.block-text{
 
+}
 .image-holder {
   position: relative;
   width: 100px; /* Adjust size as needed */
@@ -460,6 +559,7 @@ export default {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  margin-right: 20px;
 }
 
 .empty-circle {
@@ -484,43 +584,39 @@ export default {
   color: #aaa; /* Color for the + sign */
 }
 .logout {
-    background-color: #ff0000; /* Red color */
-    color: white; /* Text color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 15px 30px; /* Vertical and horizontal padding */
-    font-size: 16px; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: transform 0.2s ease; /* Smooth transition for size change */
+  background-color: #ff0000; /* Red color */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 15px 30px; /* Vertical and horizontal padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: transform 0.2s ease; /* Smooth transition for size change */
 }
 
 .logout:hover {
-    transform: scale(1.05); /* Slightly increase size on hover */
+  transform: scale(1.05); /* Slightly increase size on hover */
 }
 
-.form-group {
-    margin-bottom: 0.5rem; /* Уменьшение отступа между полями */
-}
 label {
-    display: block;
-    margin-bottom: 0.25rem; /* Уменьшение отступа под заголовком */
+  display: block;
+  margin-bottom: 0.25rem; /* Уменьшение отступа под заголовком */
 }
 input {
-    width: 100%;
-    padding: 0.25rem; /* Уменьшение внутреннего отступа */
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  width: 100%;
+  padding: 0.25rem; /* Уменьшение внутреннего отступа */
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 button {
-    padding: 0.5rem;
-    background-color: #23831e;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 0.5rem;
+  background-color: #23831e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 button:hover {
-    background-color: #1a6414;
+  background-color: #1a6414;
 }
-
 </style>

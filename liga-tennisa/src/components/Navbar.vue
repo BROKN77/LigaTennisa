@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar">
+    <img class="image" src="../images/header-logo.png" alt="" />
     <div class="logo">ЛИГА ТЕННИСА</div>
+
     <ul class="nav-links">
       <li><a href="#">Главная</a></li>
       <li><a href="#">Для участников</a></li>
@@ -44,9 +46,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   background-color: #23831e;
-  padding: 0.75rem ;
+  padding: 0.75rem;
   margin: 0;
-  border-bottom-left-radius: 20px; 
+  border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   position: sticky;
   top: 0;
@@ -56,9 +58,13 @@ export default {
 .logo {
   font-size: 1.5rem;
   color: #fff;
-  margin-left: 100px;
+  margin-right: 30%;
 }
-
+.image {
+  width: 35px;
+  height: 35px;
+  margin-left: 2%;
+}
 .nav-links {
   list-style: none;
   display: flex;

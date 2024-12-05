@@ -22,6 +22,8 @@ const db = mysql.createConnection({
   port: 3308 //port server
 });
 
+
+
 db.connect(err => {
   if (err) {
     console.error('Error connecting to MySQL:', err);
@@ -30,9 +32,10 @@ db.connect(err => {
   console.log('Connected to MySQL');
 });
 
+
 // Register User Route
 app.post('/register', (req, res) => {
-  const { username, email, password, image } = req.body;
+  const { username, email, password, skillLevel } = req.body;
 
   // Hash the password before storing it
   bcrypt.hash(password, 10, (err, hash) => {
@@ -41,9 +44,25 @@ app.post('/register', (req, res) => {
       return res.status(500).json({ message: 'Error registering user', error: err });
     }
 
-    const query = 'INSERT INTO users (username, email, password, image) VALUES (?, ?, ?, NULL)';
+    // Determine skill level based on user input
+    let skillLevelValue;
+    switch (skillLevel) {
+      case 'Новичок':
+        skillLevelValue = 1; // or any value between 1-25
+        break;
+      case 'Любитель':
+        skillLevelValue = 26; // or any value between 26-50
+        break;
+      case 'Профессионал':
+        skillLevelValue = 51; // or any value between 51-75
+        break;
+      default:
+        skillLevelValue = null; // In case of invalid input
+    }
+
+    const query = 'INSERT INTO users (username, email, password, skill_level, image) VALUES (?, ?, ?, ?, NULL)';
     
-    db.query(query, [username, email, hash, image], (err, results) => {
+    db.query(query, [username, email, hash, skillLevelValue], (err, results) => {
       if (err) {
         console.error('Error registering user:', err);
         return res.status(500).json({ message: 'Error registering user', error: err });
@@ -120,21 +139,57 @@ app.post('/upload-image/:id', upload.single('image'), (req, res) => {
       return res.status(500).json({ error: 'Failed to upload image.' });
     }
     res.json({ message: 'Image uploaded successfully!' });
+    
   });
 });
 //To load img in profile
 app.get('/api/user/:id', (req, res) => {
   const userId = req.params.id;
-  db.query('SELECT username, email, image FROM users WHERE id = ?', [userId], (error, results) => {
+  db.query('SELECT username, email, skill_level, image FROM users WHERE id = ?', [userId], (error, results) => {
     if (error) throw error;
     if (results.length > 0) {
       const user = results[0];
       // Convert BLOB to base64 string for image display
       const imageBase64 = user.image ? Buffer.from(user.image).toString('base64') : null;
-      res.json({ username: user.username, email: user.email, image: imageBase64 });
+      res.json({ username: user.username, email: user.email, skill_level: user.skill_level, image: imageBase64 });
     } else {
       res.status(404).json({ message: 'User not found' });
     }
+  });
+});
+
+// Endpoint to handle tournament application submissions
+app.post('/submit-application', (req, res) => {
+  const {
+    phone,
+    email,
+    lastName,
+    firstName,
+    middleName,
+    date,
+    time,
+    location,
+    tournamentName,
+    tournamentLevel,
+  } = req.body;
+
+  // SQL query to insert data into the database
+  const sql = 'INSERT INTO events (phone, email, last_name, first_name, middle_name, date, time, location, tournament_name, tournament_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+  // Execute the query
+  db.query(sql, [phone, email, lastName, firstName, middleName, date, time, location, tournamentName, tournamentLevel], (error, results) => {
+    if (error) {
+      console.error('Error inserting data:', error);
+      return res.status(500).json({ message: 'Ошибка при добавлении данных' });
+    }
+    res.status(201).json({ message: 'Заявка успешно отправлена!' });
+  });
+});
+
+app.get('/api/events', (req, res) => {
+  db.query('SELECT * FROM events', (error, results, fields) => {
+    if (error) throw error;
+    res.json(results);
   });
 });
 

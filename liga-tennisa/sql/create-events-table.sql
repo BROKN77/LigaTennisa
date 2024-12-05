@@ -1,12 +1,14 @@
 CREATE TABLE events (
- id INT AUTO_INCREMENT PRIMARY KEY, 
- email VARCHAR(255) NOT NULL,
- name VARCHAR(255) NOT NULL,
- surname VARCHAR(255) NOT NULL,
- fathername varchar(255),
- eventdate Date NOT NULL,
- hour varchar(10) NOT NULL,
- place VARCHAR(255) NOT NULL,
- tournament VARCHAR(255) NOT NULL
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	phone VARCHAR(15) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    middle_name VARCHAR(100),
+    date DATE NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    tournament_name VARCHAR(255) NOT NULL,
+    tournament_level ENUM('Новичок', 'Любитель', 'Профессионал', 'Мастер') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  );
  

@@ -2,9 +2,16 @@
   <div class="news-container">
     <h2>Новости тенниса</h2>
     <div v-for="(article, index) in articles" :key="index" class="news-item">
-      <img :src="article.urlToImage" alt="News Image" class="news-image" v-if="article.urlToImage"/>
+      <img
+        :src="article.urlToImage"
+        alt="News Image"
+        class="news-image"
+        v-if="article.urlToImage"
+      />
       <div class="news-content">
-        <a :href="article.url" target="_blank" class="news-title">{{ article.title }}</a>
+        <a :href="article.url" target="_blank" class="news-title">{{
+          article.title
+        }}</a>
         <p class="news-description">{{ article.description }}</p>
       </div>
     </div>
@@ -17,23 +24,25 @@ export default {
   data() {
     return {
       articles: [],
-    };
+    }
   },
   created() {
-    this.fetchNews();
+    this.fetchNews()
   },
   methods: {
     async fetchNews() {
       try {
-        const response = await fetch('https://newsapi.org/v2/everything?q=tennis&language=ru&apiKey=122d83bacd74421a88d0b72178d0a0ac');
-        const data = await response.json();
-        this.articles = data.articles;
+        const response = await fetch(
+          'https://newsapi.org/v2/everything?q=tennis&language=ru&apiKey=effa889e785844bf8b5d78145d857cd4',
+        )
+        const data = await response.json()
+        this.articles = data.articles
       } catch (error) {
-        console.error('Ошибка при загрузке новостей:', error);
+        console.error('Ошибка при загрузке новостей:', error)
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -75,7 +84,7 @@ export default {
 .news-title {
   font-size: 18px;
   font-weight: bold;
-  color: #007BFF;
+  color: #007bff;
   text-decoration: none;
 }
 

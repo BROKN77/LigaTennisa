@@ -1,1 +1,1 @@
-ALTER TABLE users ADD image MEDIUMBLOB NULL
+ALTER TABLE users ADD skill_level int
