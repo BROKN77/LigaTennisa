@@ -9,9 +9,7 @@
         v-if="article.urlToImage"
       />
       <div class="news-content">
-        <a :href="article.url" target="_blank" class="news-title">{{
-          article.title
-        }}</a>
+        <a :href="article.url" target="_blank" class="news-title">{{ article.title }}</a>
         <p class="news-description">{{ article.description }}</p>
       </div>
     </div>
@@ -24,25 +22,38 @@ export default {
   data() {
     return {
       articles: [],
+      intervalId: null, // Для хранения идентификатора интервала
     }
   },
-  created() {
-    this.fetchNews()
+  mounted() {
+    this.fetchNews(); // Первоначальная загрузка новостей
+    this.startAutoRefresh(); // Запуск автоматического обновления
   },
-  methods: {
-    async fetchNews() {
-      try {
-        const response = await fetch(
-          'https://newsapi.org/v2/everything?q=tennis&language=ru&apiKey=effa889e785844bf8b5d78145d857cd4',
-        )
-        const data = await response.json()
-        this.articles = data.articles
-      } catch (error) {
-        console.error('Ошибка при загрузке новостей:', error)
-      }
-    },
+  beforeDestroy() {
+    clearInterval(this.intervalId); // Остановка интервала при уничтожении компонента
   },
+  methods: { 
+  async fetchNews() { 
+    try { 
+      const response = await fetch( 
+        'https://newsapi.org/v2/everything?q=tennis&language=ru&apiKey=effa889e785844bf8b5d78145d857cd4' 
+      ); 
+      const data = await response.json(); 
+      // Сортируем статьи по дате (от новых к старым) 
+      this.articles = data.articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)); 
+    } catch (error) { 
+      console.error('Ошибка при загрузке новостей:', error); 
+    } 
+  }, 
+
+  startAutoRefresh() { 
+    this.intervalId = setInterval(() => { 
+      this.fetchNews(); // Обновление новостей каждые 5 минут (300000 мс) 
+    }, 300000); // Задайте нужный интервал 
+  } 
+},
 }
+
 </script>
 
 <style scoped>

@@ -546,9 +546,6 @@ export default {
   display: inline-flex;
   padding-bottom: 5%;
 }
-.block-text{
-
-}
 .image-holder {
   position: relative;
   width: 100px; /* Adjust size as needed */
