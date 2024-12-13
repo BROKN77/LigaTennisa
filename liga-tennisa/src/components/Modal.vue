@@ -226,9 +226,10 @@
         <div v-if="skillLevelName === event.tournament_level">
           <button class="register-on-event" @click="">Участвовать</button>
         </div>
-        <div v-else=>
+        <div v-else-if="skillLevelName !== event.tournament_level">
           <p><b>Ваш рейтинг не является подходящим</b></p>
         </div>
+        
       </div>
     </div>
    
@@ -295,7 +296,7 @@ export default {
   },
   methods: {
     skill_level(skillLevelProfile){
-      if(skillLevelProfile < 26){
+      if(skillLevelProfile>=1 && skillLevelProfile < 26){
         this.skillLevelName = 'Новичок'
       }
       else if(skillLevelProfile >= 26 && skillLevelProfile < 51){
@@ -463,6 +464,7 @@ export default {
       localStorage.removeItem('token') // Clear token from localStorage
       this.isLoggedIn = false // Update login state
       this.imageUrl = ''
+      this.skillLevelName = ''
       location.reload()
     },
     async submitApplication() {

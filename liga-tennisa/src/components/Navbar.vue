@@ -4,12 +4,12 @@
     <div class="logo">ЛИГА ТЕННИСА</div>
 
     <ul class="nav-links">
-      <li><a href="#">Главная</a></li>
-      <li><a href="#">Для участников</a></li>
+      <li><router-link to="/">Главная</router-link></li> 
+      <li><router-link to="/for-participants">Для участников</router-link></li>
       <li>
         <a href="#" @click.prevent="openModal('Заявки')">Для организаторов</a>
       </li>
-      <li><a href="#">Результаты</a></li>
+      <li><router-link to="/results">Результаты</router-link></li> 
       <li>
         <a href="#" @click.prevent="openModal('Контакты')">Контакты</a>
       </li>
@@ -78,6 +78,16 @@ export default {
   color: #fff;
   text-decoration: none;
   transition: color 0.3s;
+}
+
+.nav-links router-link{
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-links router-link:hover{
+  color: #52d182;
 }
 
 .nav-links a:hover {
