@@ -1,39 +1,40 @@
-<template>
-  <div class="event-calendar">
-    <h2>Календарь событий</h2>
-    <div class="events">
-      <div
-        class="event-card"
-        v-for="event in events"
-        :key="event.id"
-        @click="openModal(event.tournament_name)" 
-      >
+<template> 
+  <div class="event-calendar"> 
+    <h2>Календарь событий</h2> 
+    <div class="events"> 
+      <div 
+        class="event-card" 
+        v-for="event in events" 
+        :key="event.id" 
+        @click="openModal(event)"  
+      > 
         <h3>{{ event.tournament_name }}</h3>
-        <p>{{ changeDate(event.date) }} {{ event.time }}</p>
-        <p>Уровень турнира: <b>{{ event.tournament_level }}</b></p>
-      </div>
-    </div>
-  </div>
-</template>
+        <p>{{ changeDate(event.date) }} {{ event.time }}</p> 
+        <p>Уровень турнира: <b>{{ event.tournament_level }}</b></p> 
+      </div> 
+    </div> 
+  </div> 
+</template> 
 
-<script>
-import axios from 'axios';
-import moment from 'moment';
+<script> 
+import axios from 'axios'; 
+import moment from 'moment'; 
 
-export default {
-  name: 'EventCalendar',
-  data() {
-    return {
-      events: [],
-    };
-  },
+export default { 
+  name: 'EventCalendar', 
+  data() { 
+    return { 
+      events: [], 
+    }; 
+  }, 
   
-  created() {
-    this.fetchEvents(); // Fetch events when the component is created
-  },
-  methods: {
-    openModal(tournament_name) { // Adjusted parameter name for clarity
-      this.$emit('open-modal', tournament_name);
+  created() { 
+    this.fetchEvents(); // Получаем события при создании компонента
+  }, 
+  
+  methods: { 
+    openModal(event) { // Параметр переименован для ясности
+      this.$emit('open-modal', event); // Эмитим событие с объектом события
     },
     async fetchEvents() {
       try {

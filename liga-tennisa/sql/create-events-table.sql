@@ -6,9 +6,10 @@ CREATE TABLE events (
     first_name VARCHAR(100) NOT NULL,
     middle_name VARCHAR(100),
     date DATE NOT NULL,
+    time TIME not null,
     location VARCHAR(255) NOT NULL,
     tournament_name VARCHAR(255) NOT NULL,
-    tournament_level ENUM('Новичок', 'Любитель', 'Профессионал', 'Мастер') NOT NULL,
+    tournament_level VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  );
  

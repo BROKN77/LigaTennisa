@@ -206,23 +206,39 @@
             <div class="block-text">
             <h3 class="username">Имя: {{ usernameProfile }}</h3>
             <p class="email">Почта: {{ emailProfile }}</p>
+            {{ skill_level(this.skillLevelProfile) }}
             <p class="skillLevel">
               <i>Ваши очки:
-              {{ skillLevelProfile }}</i>
+              {{ skillLevelProfile }} ({{ skillLevelName }})</i>
             </p>
             </div>
           </div>
+          </div>
         <button class="logout" @click="logoutUser">Выйти из профиля</button>
       </div>
+      <div v-else-if="title===event.tournament_name">
+        <h2 class="modal-title">{{ event.tournament_name }}</h2>
+        <p>Дата проведения турнира: {{ changeDate(event.date) }} </p>
+        <p>Время проведения турнира: {{ event.time }}</p> 
+        <p>Местро проведения: {{ event.location }}</p> 
+        <p>Уровень турнира: <b>{{ event.tournament_level }}</b></p> 
+        {{ skill_level(this.skillLevelProfile) }}
+        <div v-if="skillLevelName === event.tournament_level">
+          <button class="register-on-event" @click="">Участвовать</button>
+        </div>
+        <div v-else=>
+          <p><b>Ваш рейтинг не является подходящим</b></p>
+        </div>
+      </div>
     </div>
-    
-    </div>
+   
   </div>
+
 </template>
 
 <script>
 import axios from 'axios'
-
+import moment from 'moment';
 export default {
   name: 'MainModal',
   props: {
@@ -234,6 +250,10 @@ export default {
       type: String,
       default: '',
     },
+    event: {
+      type: Object,
+      default: ()=>({})
+    }
   },
   data() {
     return {
@@ -251,6 +271,7 @@ export default {
       emailProfile: '',
       imageUrlProfile: '',
       skillLevelProfile: '',
+      skillLevelName: '',
       form: {
         phone: '',
         email: '',
@@ -273,9 +294,26 @@ export default {
     
   },
   methods: {
+    skill_level(skillLevelProfile){
+      if(skillLevelProfile < 26){
+        this.skillLevelName = 'Новичок'
+      }
+      else if(skillLevelProfile >= 26 && skillLevelProfile < 51){
+        this.skillLevelName = 'Любитель'
+      }
+      else if(skillLevelProfile >= 51 && skillLevelProfile < 76){
+        this.skillLevelName = 'Профессионал'
+      }
+      else if(skillLevelProfile >= 76){
+        this.skillLevelName = 'Мастер'
+      }
+    },
     closeModal() {
       this.$emit('close-modal')
       this.resetForm()
+    },
+    changeDate(date){
+      return(moment(date).format("DD/MM/YYYY"));
     },
     resetForm() {
       this.username = ''
@@ -592,6 +630,21 @@ export default {
 }
 
 .logout:hover {
+  transform: scale(1.05); /* Slightly increase size on hover */
+}
+
+.register-on-event{
+  background-color: green; /* Green color */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 15px 30px; /* Vertical and horizontal padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: transform 0.2s ease; /* Smooth transition for size change */
+}
+
+.register-on-event:hover {
   transform: scale(1.05); /* Slightly increase size on hover */
 }
 
