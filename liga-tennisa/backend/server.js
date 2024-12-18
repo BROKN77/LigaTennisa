@@ -171,13 +171,14 @@ app.post('/submit-application', (req, res) => {
     location,
     tournamentName,
     tournamentLevel,
+    numOfPlayers,
   } = req.body;
 
   // SQL query to insert data into the database
-  const sql = 'INSERT INTO events (phone, email, last_name, first_name, middle_name, date, time, location, tournament_name, tournament_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const sql = 'INSERT INTO events (phone, email, last_name, first_name, middle_name, date, time, location, tournament_name, tournament_level, numOfPlayers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   // Execute the query
-  db.query(sql, [phone, email, lastName, firstName, middleName, date, time, location, tournamentName, tournamentLevel], (error, results) => {
+  db.query(sql, [phone, email, lastName, firstName, middleName, date, time, location, tournamentName, tournamentLevel, numOfPlayers], (error, results) => {
     if (error) {
       console.error('Error inserting data:', error);
       return res.status(500).json({ message: 'Ошибка при добавлении данных' });
@@ -190,6 +191,66 @@ app.get('/api/events', (req, res) => {
   db.query('SELECT * FROM events', (error, results, fields) => {
     if (error) throw error;
     res.json(results);
+  });
+});
+
+app.post('/register-on-event', (req, res) => {
+  const { eventId, playerId } = req.body;
+
+  // Проверка наличия необходимых данных
+  if (!eventId || !playerId) {
+      return res.status(400).json({ error: 'Вы не вошли в личный аккаунт/Мероприятие недоступно' });
+  }
+
+  // Запрос на регистрацию
+  const query = 'INSERT INTO event_registrations (event_id, player_id) VALUES (?, ?)';
+  db.query(query, [eventId, playerId], (err, results) => {
+      if (err) {
+          console.error('Ошибка при регистрации:', err);
+          return res.status(500).json({ error: 'Ошибка при регистрации' });
+      }
+      res.status(201).json({ message: 'Регистрация успешна', registrationId: results.insertId });
+  });
+});
+// Маршрут для проверки регистрации пользователя на мероприятие
+app.get('/registration-status', (req, res) => {
+  const { eventId, playerId } = req.query;
+
+  // Проверка наличия необходимых данных
+  if (!eventId || !playerId) {
+      return res.status(400).json({ error: 'eventId и playerId обязательны' });
+  }
+
+  // Запрос на проверку регистрации
+  const query = 'SELECT * FROM event_registrations WHERE event_id = ? AND player_id = ?';
+  db.query(query, [eventId, playerId], (err, results) => {
+      if (err) {
+          console.error('Ошибка при проверке регистрации:', err);
+          return res.status(500).json({ error: 'Ошибка при проверке регистрации' });
+      }
+      // Если результаты есть, значит пользователь зарегистрирован
+      const isRegistered = results.length > 0;
+      res.json({ isRegistered });
+  });
+});
+
+// Обновите код для отмены регистрации
+app.delete('/unregister', (req, res) => {
+  const { eventId, playerId } = req.body;
+
+  // Проверка наличия необходимых данных
+  if (!eventId || !playerId) {
+      return res.status(400).json({ error: 'eventId и playerId обязательны' });
+  }
+
+  // Запрос на отмену регистрации
+  const query = 'DELETE FROM event_registrations WHERE event_id = ? AND player_id = ?';
+  db.query(query, [eventId, playerId], (err, results) => {
+      if (err) {
+          console.error('Ошибка при отмене регистрации:', err);
+          return res.status(500).json({ error: 'Ошибка при отмене регистрации' });
+      }
+      res.json({ message: 'Вы успешно отказались от участия' });
   });
 });
 

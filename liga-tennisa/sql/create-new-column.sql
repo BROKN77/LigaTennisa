@@ -1,1 +1,1 @@
-ALTER TABLE users ADD skill_level int
+ALTER TABLE events ADD time TIME

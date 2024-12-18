@@ -98,80 +98,93 @@
       </div>
       <div v-else-if="title === 'Заявки'">
         <h2 class="modal-title">Заявка на проведение турнира</h2>
+        
         <form @submit.prevent="submitForm">
-          <div class="form-group">
-            <label for="phone">Номер телефона организатора:</label>
-            <input type="text" id="phone" v-model="form.phone" required />
-          </div>
+          <div class="column1">
+            <div class="form-group">
+              <label for="phone">Номер телефона организатора:</label>
+              <input type="text" id="phone" v-model="form.phone" required />
+            </div>
 
-          <div class="form-group">
-            <label for="email">Почта:</label>
-            <input type="email" id="email" v-model="form.email" required />
-          </div>
+            <div class="form-group">
+              <label for="email">Почта:</label>
+              <input type="email" id="email" v-model="form.email" required />
+            </div>
 
-          <div class="form-group">
-            <label for="lastName">Фамилия:</label>
-            <input type="text" id="lastName" v-model="form.lastName" required />
-          </div>
+            <div class="form-group">
+              <label for="lastName">Фамилия:</label>
+              <input type="text" id="lastName" v-model="form.lastName" required />
+            </div>
 
-          <div class="form-group">
-            <label for="firstName">Имя:</label>
-            <input
-              type="text"
-              id="firstName"
-              v-model="form.firstName"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="middleName">Отчество:</label>
-            <input
-              type="text"
-              id="middleName"
-              v-model="form.middleName"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="date">Дата проведения:</label>
-            <input type="date" id="date" v-model="form.date" required />
-          </div>
-
-          <div class="form-group">
-            <label for="time">Время проведения:</label>
-            <input type="time" id="time" v-model="form.time" required />
-          </div>
-
-          <div class="form-group">
-            <label for="location">Место проведения:</label>
-            <input type="text" id="location" v-model="form.location" required />
-          </div>
-
-          <div class="form-group">
-            <label for="tournamentName">Название турнира:</label>
-            <input
-              type="text"
-              id="tournamentName"
-              v-model="form.tournamentName"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="tournamentLevel">Уровень навыков: </label>
-              <select
-                id="tournamentLevel"
-                v-model="form.tournamentLevel"
+            <div class="form-group">
+              <label for="firstName">Имя:</label>
+              <input
+                type="text"
+                id="firstName"
+                v-model="form.firstName"
                 required
-                class="form-input"
-              >
-                <option value="">Выберите уровень</option>
-                <option value="Новичок">Новичок</option>
-                <option value="Любитель">Любитель</option>
-                <option value="Профессионал">Профессионал</option>
-                <option value="Мастер">Мастер</option>
-              </select>
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="middleName">Отчество:</label>
+              <input
+                type="text"
+                id="middleName"
+                v-model="form.middleName"
+                required
+              />
+            </div>
+          </div>
+          <div class="column2">
+            <div class="form-group">
+              <label for="date">Дата проведения:</label>
+              <input type="date" id="date" v-model="form.date" required />
+            </div>
+
+            <div class="form-group">
+              <label for="time">Время проведения:</label>
+              <input type="time" id="time" v-model="form.time" required />
+            </div>
+
+            <div class="form-group">
+              <label for="location">Место проведения:</label>
+              <input type="text" id="location" v-model="form.location" required />
+            </div>
+
+            <div class="form-group">
+              <label for="tournamentName">Название турнира:</label>
+              <input
+                type="text"
+                id="tournamentName"
+                v-model="form.tournamentName"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="tournamentLevel">Уровень навыков: </label>
+                <select style="width:95%"
+                  id="tournamentLevel"
+                  v-model="form.tournamentLevel"
+                  required
+                  class="form-input"
+                >
+                  <option value="">Выберите уровень</option>
+                  <option value="Новичок">Новичок</option>
+                  <option value="Любитель">Любитель</option>
+                  <option value="Профессионал">Профессионал</option>
+                  <option value="Мастер">Мастер</option>
+                </select>
+            </div>
+            <div class="form-group">
+              <label for="numOfPlayers">Количество игроков:</label>
+              <input
+                type="number"
+                id="numOfPlayers"
+                v-model="form.numOfPlayers"
+                required
+              />
+            </div>
           </div>
           <button @click="submitApplication" type="submit">Отправить заявку</button>
         </form>
@@ -217,14 +230,20 @@
         <button class="logout" @click="logoutUser">Выйти из профиля</button>
       </div>
       <div v-else-if="title===event.tournament_name">
+        <p style="display: none;">{{ checkRegistrationStatus() }}</p>
         <h2 class="modal-title">{{ event.tournament_name }}</h2>
         <p>Дата проведения турнира: {{ changeDate(event.date) }} </p>
         <p>Время проведения турнира: {{ event.time }}</p> 
         <p>Местро проведения: {{ event.location }}</p> 
         <p>Уровень турнира: <b>{{ event.tournament_level }}</b></p> 
+        <p>Количество мест на турнире: {{ event.numOfPlayers }}</p>
         {{ skill_level(this.skillLevelProfile) }}
         <div v-if="skillLevelName === event.tournament_level">
-          <button class="register-on-event" @click="">Участвовать</button>
+          <div>
+            <p style="align-content: center;"><b v-if="isRegistered">Вы уже участвуете</b></p>
+            <button class="register-on-event" @click="toggleRegistration">{{buttonText}}</button>
+          </div>
+          
         </div>
         <div v-else-if="skillLevelName !== event.tournament_level">
           <p><b>Ваш рейтинг не является подходящим</b></p>
@@ -283,7 +302,11 @@ export default {
         time: '',
         location: '',
         tournamentName: '',
+        tournamentLevel:'',
+        numOfPlayers:'',
       },
+      isRegistered: false,
+      buttonText: 'Зарегистрироваться на мероприятие'
     }
   },
   mounted() {
@@ -333,6 +356,8 @@ export default {
         time: '',
         location: '',
         tournamentName: '',
+        tournamentLevel:'',
+        numOfPlayers:'',
       };
     },
     async registerUser() {
@@ -433,7 +458,7 @@ export default {
 
         const response = await fetch(
           `http://localhost:3008/api/user/${this.userId.id}`,
-        ) // Замените '1' на фактический ID пользователя
+        )
 
         if (!response.ok) throw new Error('Network response was not ok')
 
@@ -478,6 +503,109 @@ export default {
         alert('Ошибка при отправке заявки');
       }
     },
+    async registerForEvent() {
+      try {
+        const parseJwt = token => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]))
+          } catch (e) {
+            return null
+          }
+        }
+        this.token = localStorage.getItem('token')
+        this.userId = parseJwt(this.token)
+        console.log(this.userId.id)
+        const response = await fetch('http://localhost:3008/register-on-event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            eventId: this.event.id,
+            playerId: this.userId.id,
+          })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+        } else {
+          alert(`Ошибка: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Ошибка при регистрации:', error);
+        alert('Произошла ошибка при регистрации.');
+      }
+    },
+    async unregister() {
+      try {
+        const parseJwt = token => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]))
+          } catch (e) {
+            return null
+          }
+        }
+        this.token = localStorage.getItem('token')
+        this.userId = parseJwt(this.token)
+
+        const response = await fetch('http://localhost:3008/unregister', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            eventId: this.event.id,
+            playerId: this.userId.id,
+          })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+        } else {
+          alert(`Ошибка: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Ошибка при отмене регистрации:', error);
+        alert('Произошла ошибка при отмене регистрации.');
+      }
+    },
+    async checkRegistrationStatus() {
+      try {
+        const parseJwt = token => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]))
+          } catch (e) {
+            return null
+          }
+        }
+        this.token = localStorage.getItem('token')
+        this.userId = parseJwt(this.token)
+        const response = await fetch(`http://localhost:3008/registration-status?eventId=${this.event.id}&playerId=${this.userId.id}`);
+        const data = await response.json();
+        if (response.ok) {
+          this.isRegistered = data.isRegistered;
+          this.buttonText = this.isRegistered ? 'Отказаться от участия' : 'Зарегистрироваться на мероприятие';
+        } else {
+          alert(`Ошибка: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Ошибка при проверке статуса регистрации:', error);
+        alert('Произошла ошибка при проверке статуса регистрации.');
+      }
+    },
+    async toggleRegistration() {
+      if (this.isRegistered) {
+        // Отменяем регистрацию
+        await this.unregister();
+      } else {
+        // Регистрируемся на мероприятие
+        await this.registerForEvent();
+      }
+      // После изменения статуса снова проверяем регистрацию
+      await this.checkRegistrationStatus();
+    },
   },
 }
 </script>
@@ -508,7 +636,7 @@ export default {
   margin: 10% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 350px;
+  width: 450px;
   border-radius: 5px;
 }
 .modal-title {
@@ -530,6 +658,17 @@ export default {
 .login-form {
   display: flex;
   flex-direction: column;
+}
+
+.column1{
+  width: 40%;
+  float:left;
+  margin-right: 10%;
+}
+.column2{
+  width: 40%;
+  float:left;
+  margin-right: 10%;
 }
 .form-group {
   margin-bottom: 15px;

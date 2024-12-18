@@ -1,2 +1,2 @@
 use db;
-delete from users where id="1"
+delete from events where id="4"
