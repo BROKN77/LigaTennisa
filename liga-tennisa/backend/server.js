@@ -254,6 +254,60 @@ app.delete('/unregister', (req, res) => {
   });
 });
 
+app.get('/event-info', (req, res) => {
+  const { eventId } = req.query;
+
+  // Проверка наличия необходимых данных
+  if (!eventId) {
+      return res.status(400).json({ error: 'eventId обязателен' });
+  }
+
+  // Запрос на получение информации о мероприятии
+  const query =`
+      SELECT e.numOfPlayers, COUNT(er.player_id) AS currentPlayers
+      FROM events e
+      LEFT JOIN event_registrations er ON e.id = er.event_id
+      WHERE e.id = ?
+      GROUP BY e.id`
+  ;
+  
+  db.query(query, [eventId], (err, results) => {
+      if (err) {
+          console.error('Ошибка при получении информации о мероприятии:', err);
+          return res.status(500).json({ error: 'Ошибка при получении информации о мероприятии' });
+      }
+      
+      if (results.length === 0) {
+          return res.status(404).json({ error: 'Мероприятие не найдено' });
+      }
+
+      const eventInfo = results[0];
+      res.json({
+          numOfPlayers: eventInfo.numOfPlayers,
+          currentPlayers: eventInfo.currentPlayers || 0
+      });
+  });
+});
+
+app.post('/api/updateProfile', (req, res) => {
+  const { id, username, email } = req.body;
+  //const userId = req.body.userId; // Предполагается, что ID пользователя также передается
+
+  if (!username || !email || !id) {
+    return res.status(400).json({ message: 'Недостаточно данных для обновления профиля' });
+  }
+
+  const query = 'UPDATE users SET username = ?, email = ? WHERE id = ?';
+  db.query(query, [username, email, id], (err, res) => {
+    if (err) {
+      console.error('Ошибка при обновлении профиля:', err);
+      return res.status(500).json({ message: 'Ошибка при обновлении профиля' });
+    }
+
+    res.status(200).json({ message: 'Профиль успешно обновлен' });
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log('Server is running on port ', PORT);

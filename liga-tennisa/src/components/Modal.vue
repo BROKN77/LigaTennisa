@@ -192,6 +192,16 @@
       <div v-else-if="title === 'Профиль'">
         <h2 class="modal-title">{{ 'Ваш ' + title.toLowerCase() }}</h2>
         <div class="profile">
+          <div v-if="!editMode" class="edit-img-container">
+            <img
+              src="../images/edit-img.jpg" 
+              alt="Редактирование"
+              class="edit-icon"
+              @click="changeEditMode"
+              width="25px"
+              height="25px"
+              />
+          </div>
           <div class="inline-objects">
             <div
               class="image-holder"
@@ -217,33 +227,71 @@
               </div>
             </div>
             <div class="block-text">
-            <h3 class="username">Имя: {{ usernameProfile }}</h3>
-            <p class="email">Почта: {{ emailProfile }}</p>
-            {{ skill_level(this.skillLevelProfile) }}
-            <p class="skillLevel">
-              <i>Ваши очки:
-              {{ skillLevelProfile }} ({{ skillLevelName }})</i>
-            </p>
+              <div v-if="editMode===false">
+                <h3 class="username">Имя: {{ usernameProfile }}</h3>
+                <p class="email">Почта: {{ emailProfile }}</p>
+                {{ skill_level(this.skillLevelProfile) }}
+                <p class="skillLevel">
+                  <i>Ваши очки:
+                  {{ skillLevelProfile }} ({{ skillLevelName }})</i>
+                </p>
+              </div>
+              <div v-else>
+                <form @submit.prevent="updateProfile">
+                  <h3 class="username">Имя:<input
+                    type="text"
+                    v-model="editedUsername"
+                    placeholder="Введите имя"
+                  />  
+                  </h3>
+                  <p class="email">Почта: 
+                    <input
+                      type="email"
+                      v-model="editedEmail"
+                      placeholder="Введите почту"
+                    />
+                  </p>
+                  {{ skill_level(this.skillLevelProfile) }}
+                  <p class="skillLevel">
+                    <i>Ваши очки:
+                    {{ skillLevelProfile }} ({{ skillLevelName }})</i>
+                  </p>
+                  <button class="edit-button" @click="updateProfile" type="submit">Подтвердить изменения</button>
+                  <button class="edit-button" @click="changeEditMode">Отмена</button>
+                </form>
+              </div>
             </div>
           </div>
-          </div>
+          
+        </div>
         <button class="logout" @click="logoutUser">Выйти из профиля</button>
       </div>
       <div v-else-if="title===event.tournament_name">
         <p style="display: none;">{{ checkRegistrationStatus() }}</p>
+        <p style="display: none;">{{ fetchEventInfo() }}</p>
         <h2 class="modal-title">{{ event.tournament_name }}</h2>
         <p>Дата проведения турнира: {{ changeDate(event.date) }} </p>
         <p>Время проведения турнира: {{ event.time }}</p> 
         <p>Местро проведения: {{ event.location }}</p> 
         <p>Уровень турнира: <b>{{ event.tournament_level }}</b></p> 
-        <p>Количество мест на турнире: {{ event.numOfPlayers }}</p>
+        <p>Зарегистрировано игроков: {{ currentPlayers }}/{{ maxPlayers }}</p>
         {{ skill_level(this.skillLevelProfile) }}
         <div v-if="skillLevelName === event.tournament_level">
-          <div>
-            <p style="align-content: center;"><b v-if="isRegistered">Вы уже участвуете</b></p>
-            <button class="register-on-event" @click="toggleRegistration">{{buttonText}}</button>
+          <div v-if="availabilityOfRegistration(currentPlayers,maxPlayers)">
+            <div>
+              <p style="align-content: center;"><b v-if="isRegistered">Вы уже участвуете</b></p>
+              <button class="register-on-event" @click="toggleRegistration">{{buttonText}}</button>
+            </div>
           </div>
-          
+          <div v-else>
+            <div v-if="isRegistered">
+              <p style="align-content: center;"><b>Вы уже участвуете</b></p>
+              <button class="register-on-event" @click="toggleRegistration">{{buttonText}}</button>
+            </div>
+            <div v-else>
+              <p style="align-content: center;"><b>Мероприятие заполнено</b></p>
+            </div>
+          </div>
         </div>
         <div v-else-if="skillLevelName !== event.tournament_level">
           <p><b>Ваш рейтинг не является подходящим</b></p>
@@ -306,7 +354,13 @@ export default {
         numOfPlayers:'',
       },
       isRegistered: false,
-      buttonText: 'Зарегистрироваться на мероприятие'
+      buttonText: 'Зарегистрироваться на мероприятие',
+      currentPlayers: 0,
+      maxPlayers: 0,
+      //prof redact
+      editMode: false,
+      editedUsername: this.usernameProfile,
+      editedEmail: this.emailProfile,
     }
   },
   mounted() {
@@ -318,6 +372,14 @@ export default {
     
   },
   methods: {
+    changeEditMode(){
+      if(this.editMode===false) this.editMode = true;
+      else this.editMode = false;
+    },
+    availabilityOfRegistration(currPlayers, maxPlayers){
+      if(currPlayers === maxPlayers) return false;
+      else if(currPlayers <= maxPlayers) return true;
+    },
     skill_level(skillLevelProfile){
       if(skillLevelProfile>=1 && skillLevelProfile < 26){
         this.skillLevelName = 'Новичок'
@@ -606,6 +668,50 @@ export default {
       // После изменения статуса снова проверяем регистрацию
       await this.checkRegistrationStatus();
     },
+    async fetchEventInfo() {
+      try {
+        const response = await fetch(`http://localhost:3008/event-info?eventId=${this.event.id}`);
+        const data = await response.json();
+        if (response.ok) {
+          this.maxPlayers = data.numOfPlayers;
+          this.currentPlayers = data.currentPlayers;
+        } else {
+          alert(`Ошибка: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Ошибка при получении информации о мероприятии:', error);
+        alert('Произошла ошибка при получении информации о мероприятии.');
+      }
+    },
+    async updateProfile() {
+      try {
+        const parseJwt = token => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]))
+          } catch (e) {
+            return null
+          }
+        }
+        this.token = localStorage.getItem('token')
+        this.userId = parseJwt(this.token)
+        const response = await axios.post('http://localhost:3008/api/updateProfile', {
+          id: this.userId.id,
+          username: this.editedUsername,
+          email: this.editedEmail
+        });
+        this.message = response.data.message;
+        location.reload()
+      } catch (error) {
+        if (error.response) {
+          this.message = error.response.data.message || 'Ошибка при обновлении профиля';
+        } else if (error.request) {
+          this.message = 'Сервер не отвечает';
+        } else {
+          // Произошла ошибка при настройке запроса
+          this.message = 'Ошибка: ' + error.message;
+        }
+      }
+    },
   },
 }
 </script>
@@ -809,5 +915,30 @@ button {
 }
 button:hover {
   background-color: #1a6414;
+}
+
+.edit-button {
+  background-color: #007bff; /* Цвет кнопки */
+  color: white; /* Цвет текста */
+  border: none; /* Без границы */
+  border-radius: 5px; /* Закругленные углы */
+  padding: 10px; /* Отступы */
+  cursor: pointer; /* Курсор указателя */
+  margin-bottom: 5px;
+  margin-left: 2px;
+}
+
+.edit-button:hover {
+  background-color: #0056b3; /* Темный цвет при наведении */
+}
+
+.edit-img-container{
+  width:100%;
+}
+
+.edit-icon {
+  height: auto;
+  cursor: pointer; /* Указатель при наведении */
+  float:right;
 }
 </style>
